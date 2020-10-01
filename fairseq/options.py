@@ -27,6 +27,7 @@ def get_training_parser(default_task="translation"):
     add_model_args(parser)
     add_optimization_args(parser)
     add_checkpoint_args(parser)
+    add_transformer_body_loading_args(parser)
     return parser
 
 
@@ -669,5 +670,16 @@ def add_model_args(parser):
     group.add_argument('--arch', '-a', metavar='ARCH',
                        choices=ARCH_MODEL_REGISTRY.keys(),
                        help='model architecture')
+    # fmt: on
+    return group
+
+
+def add_transformer_body_loading_args(parser):
+    group = parser.add_argument_group("Transformer body loading")
+    # fmt: off
+    group.add_argument('--load-transformer-body-from', default=None, type=str,
+                       help='load the transformer body from a pretrained model')
+    group.add_argument('--freeze-pretrained-transformer-body', action='store_true',
+                       help='freeze the pretrained transformer body during training')
     # fmt: on
     return group

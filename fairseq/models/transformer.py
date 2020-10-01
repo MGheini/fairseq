@@ -3,6 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+import logging
 import math
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -32,6 +33,9 @@ from torch import Tensor
 
 DEFAULT_MAX_SOURCE_POSITIONS = 1024
 DEFAULT_MAX_TARGET_POSITIONS = 1024
+
+
+logger = logging.getLogger(__name__)
 
 
 @register_model("transformer")
@@ -89,6 +93,27 @@ class TransformerModel(FairseqEncoderDecoderModel):
         super().__init__(encoder, decoder)
         self.args = args
         self.supports_align_args = True
+
+        if getattr(self.args, 'load_transformer_body_from', None) is not None:
+            pretrained_state_dict = torch.load(self.args.load_transformer_body_from)['model']
+            for name, param in self.named_parameters():
+                if name not in ['encoder.embed_tokens.weight',
+                                'encoder.embed_positions.weight',
+                                'encoder.layernorm_embedding.weight',
+                                'encoder.layernorm_embedding.bias',
+                                'decoder.embed_tokens.weight',
+                                'decoder.embed_positions.weight',
+                                'decoder.layernorm_embedding.weight',
+                                'decoder.layernorm_embedding.bias'
+                                'decoder.output_projection.weight'
+                                ]:
+                    param.data = pretrained_state_dict[name]
+                    if self.args.freez_pretrained_transformer_body:
+                        param.requires_grad = False
+                        logger.info(f'loaded and froze parameter {name} in the transformer body')
+            for name, param in self.named_parameters():
+                if param.requires_grad:
+                    logger.info(f'parameter {name} will be trained')
 
     @staticmethod
     def add_args(parser):
