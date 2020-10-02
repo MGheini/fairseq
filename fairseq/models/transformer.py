@@ -107,8 +107,8 @@ class TransformerModel(FairseqEncoderDecoderModel):
                                 'decoder.layernorm_embedding.bias',
                                 'decoder.output_projection.weight'
                                 ]:
-                    # with torch.no_grad():
-                    param.copy_(pretrained_state_dict[name])
+                    with torch.no_grad():
+                        param.copy_(pretrained_state_dict[name])
                     if self.args.freeze_pretrained_transformer_body:
                         param.requires_grad = False
                         logger.info(f'loaded and froze parameter {name} in the transformer body')
