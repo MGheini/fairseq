@@ -108,7 +108,7 @@ class TransformerModel(FairseqEncoderDecoderModel):
                                 'decoder.output_projection.weight'
                                 ]:
                     param.data = pretrained_state_dict[name]
-                    if self.args.freez_pretrained_transformer_body:
+                    if self.args.freeze_pretrained_transformer_body:
                         param.requires_grad = False
                         logger.info(f'loaded and froze parameter {name} in the transformer body')
             for name, param in self.named_parameters():
