@@ -104,7 +104,7 @@ class TransformerModel(FairseqEncoderDecoderModel):
                                 'decoder.embed_tokens.weight',
                                 'decoder.embed_positions.weight',
                                 'decoder.layernorm_embedding.weight',
-                                'decoder.layernorm_embedding.bias'
+                                'decoder.layernorm_embedding.bias',
                                 'decoder.output_projection.weight'
                                 ]:
                     param.data = pretrained_state_dict[name]
