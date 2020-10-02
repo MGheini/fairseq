@@ -94,27 +94,27 @@ class TransformerModel(FairseqEncoderDecoderModel):
         self.args = args
         self.supports_align_args = True
 
-        if getattr(self.args, 'load_transformer_body_from', None) is not None:
-            pretrained_state_dict = torch.load(self.args.load_transformer_body_from)['model']
-            for name, param in self.named_parameters():
-                if name not in ['encoder.embed_tokens.weight',
-                                'encoder.embed_positions.weight',
-                                'encoder.layernorm_embedding.weight',
-                                'encoder.layernorm_embedding.bias',
-                                'decoder.embed_tokens.weight',
-                                'decoder.embed_positions.weight',
-                                'decoder.layernorm_embedding.weight',
-                                'decoder.layernorm_embedding.bias',
-                                'decoder.output_projection.weight'
-                                ]:
-                    with torch.no_grad():
-                        param.copy_(pretrained_state_dict[name])
-                    if self.args.freeze_pretrained_transformer_body:
-                        param.requires_grad = False
-                        logger.info(f'loaded and froze parameter {name} in the transformer body')
-            for name, param in self.named_parameters():
-                if param.requires_grad:
-                    logger.info(f'parameter {name} will be trained')
+        # if getattr(self.args, 'load_transformer_body_from', None) is not None:
+        #     pretrained_state_dict = torch.load(self.args.load_transformer_body_from)['model']
+        #     for name, param in self.named_parameters():
+        #         if name not in ['encoder.embed_tokens.weight',
+        #                         'encoder.embed_positions.weight',
+        #                         'encoder.layernorm_embedding.weight',
+        #                         'encoder.layernorm_embedding.bias',
+        #                         'decoder.embed_tokens.weight',
+        #                         'decoder.embed_positions.weight',
+        #                         'decoder.layernorm_embedding.weight',
+        #                         'decoder.layernorm_embedding.bias',
+        #                         'decoder.output_projection.weight'
+        #                         ]:
+        #             with torch.no_grad():
+        #                 param.copy_(pretrained_state_dict[name])
+        #             if self.args.freeze_pretrained_transformer_body:
+        #                 param.requires_grad = False
+        #                 logger.info(f'loaded and froze parameter {name} in the transformer body')
+        #     for name, param in self.named_parameters():
+        #         if param.requires_grad:
+        #             logger.info(f'parameter {name} will be trained')
 
     @staticmethod
     def add_args(parser):

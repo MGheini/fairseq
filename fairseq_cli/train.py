@@ -66,6 +66,29 @@ def main(args):
 
     # Build model and criterion
     model = task.build_model(args)
+
+    if getattr(args, 'load_transformer_body_from', None) is not None:
+        pretrained_state_dict = torch.load(args.load_transformer_body_from)['model']
+        for name, param in model.named_parameters():
+            if name not in ['encoder.embed_tokens.weight',
+                            'encoder.embed_positions.weight',
+                            'encoder.layernorm_embedding.weight',
+                            'encoder.layernorm_embedding.bias',
+                            'decoder.embed_tokens.weight',
+                            'decoder.embed_positions.weight',
+                            'decoder.layernorm_embedding.weight',
+                            'decoder.layernorm_embedding.bias',
+                            'decoder.output_projection.weight'
+                            ]:
+                with torch.no_grad():
+                    param.copy_(pretrained_state_dict[name])
+                if args.freeze_pretrained_transformer_body:
+                    param.requires_grad = False
+                    logger.info(f'loaded and froze parameter {name} in the transformer body')
+        for name, param in model.named_parameters():
+            if param.requires_grad:
+                logger.info(f'parameter {name} will be trained')
+
     criterion = task.build_criterion(args)
     logger.info(model)
     logger.info("task: {} ({})".format(args.task, task.__class__.__name__))
