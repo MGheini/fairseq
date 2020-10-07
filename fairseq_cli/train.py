@@ -89,7 +89,7 @@ def main(args):
             if param.requires_grad:
                 logger.info(f'parameter {name} will be trained')
     if getattr(args, 'load_transformer_body_and_src_embeddings_from') is not None:
-        pretrained_state_dict = torch.load(args.load_transformer_body_from)['model']
+        pretrained_state_dict = torch.load(args.load_transformer_body_and_src_embeddings_from)['model']
         for name, param in model.named_parameters():
             if name not in ['decoder.embed_tokens.weight',
                             'decoder.embed_positions.weight',
