@@ -162,7 +162,7 @@ class TransformerModel(FairseqEncoderDecoderModel):
                                  'if different from decoder embed dim')
         parser.add_argument('--share-decoder-input-output-embed', action='store_true',
                             help='share decoder input and output embeddings')
-        parser.add_argument('--share-all-embeddings', action='store_true',
+        parser.add_argument('--share-all-embeddings', default=False, action='store_true',
                             help='share encoder, decoder and output embeddings'
                                  ' (requires shared dictionary and embed dim)')
         parser.add_argument('--no-token-positional-embeddings', default=False, action='store_true',
