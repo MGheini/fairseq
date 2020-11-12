@@ -112,6 +112,25 @@ def main(args):
                                 ]:
                         param.requires_grad = False
                         logger.info(f'froze parameter {name}')
+    if getattr(args, 'load_tgt_embeddings_from') is not None:
+        pretrained_state_dict = torch.load(args.load_tgt_embeddings_from)['model']
+        for name, param in model.named_parameters():
+            if name in ['decoder.embed_tokens.weight',
+                        'decoder.embed_positions.weight',
+                        'decoder.layernorm_embedding.weight',
+                        'decoder.layernorm_embedding.bias',
+                        'decoder.output_projection.weight'
+                        ]:
+                with torch.no_grad():
+                    if name == 'decoder.embed_tokens.weight' or 'decoder.output_projection.weight':
+                        # remove last row of embedding matrix that corresponds to mask_idx token.
+                        param.copy_(pretrained_state_dict[name][:-1, :])
+                    else:
+                        param.copy_(pretrained_state_dict[name])
+                    logger.info(f'loaded parameter {name}')
+                    if args.freeze_pretrained_tgt_embeddings:
+                        param.requires_grad = False
+                        logger.info(f'froze parameter {name}')
 
     criterion = task.build_criterion(args)
     logger.info(model)
