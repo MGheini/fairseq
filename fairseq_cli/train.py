@@ -122,7 +122,7 @@ def main(args):
                         'decoder.output_projection.weight'
                         ]:
                 with torch.no_grad():
-                    if name == 'decoder.embed_tokens.weight' or 'decoder.output_projection.weight':
+                    if name == 'decoder.embed_tokens.weight' or name == 'decoder.output_projection.weight':
                         # remove last row of embedding matrix that corresponds to mask_idx token.
                         param.copy_(pretrained_state_dict[name][:-1, :])
                     else:
