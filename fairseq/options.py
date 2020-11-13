@@ -690,5 +690,7 @@ def add_transformer_body_loading_args(parser):
                        help='load the tgt embeddings from a pretrained model to finetune on translation')
     group.add_argument('--freeze-pretrained-tgt-embeddings', action='store_true',
                        help='freeze the tgt embeddings during training')
+    group.add_argument('--load-franken-model-and-freeze-embeddings-from', default=None, type=str,
+                       help='load a frankenstein model to finetune on translation')
     # fmt: on
     return group

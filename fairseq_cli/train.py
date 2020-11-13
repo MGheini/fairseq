@@ -131,6 +131,24 @@ def main(args):
                     if args.freeze_pretrained_tgt_embeddings:
                         param.requires_grad = False
                         logger.info(f'froze parameter {name}')
+    if getattr(args, 'load_franken_model_and_freeze_embeddings_from') is not None:
+        logger.info(f'loading the Frankenstein model from {args.load_franken_model_and_freeze_embeddings_from}')
+        pretrained_state_dict = torch.load(args.load_franken_model_and_freeze_embeddings_from)['model']
+        for name, param in model.named_parameters():
+            with torch.no_grad():
+                param.copy_(pretrained_state_dict[name])
+                if name in ['encoder.embed_tokens.weight',
+                            'encoder.embed_positions.weight',
+                            'encoder.layernorm_embedding.weight',
+                            'encoder.layernorm_embedding.bias',
+                            'decoder.embed_tokens.weight',
+                            'decoder.embed_positions.weight',
+                            'decoder.layernorm_embedding.weight',
+                            'decoder.layernorm_embedding.bias',
+                            'decoder.output_projection.weight'
+                            ]:
+                    param.requires_grad = False
+                    logger.info(f'froze parameter {name}')
 
     criterion = task.build_criterion(args)
     logger.info(model)
