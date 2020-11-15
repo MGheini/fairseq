@@ -149,6 +149,13 @@ def main(args):
                             ]:
                     param.requires_grad = False
                     logger.info(f'froze parameter {name}')
+        if args.only_finetune_cross_attn:
+            logger.info(f'only cross-attention layers will be trained, freezing all other parameters')
+            for name, param in model.named_parameters():
+                if 'encoder_attn' not in name:
+                    param.requires_grad = False
+                else:
+                    logger.info(f'parameter {name} will be trained')
 
     criterion = task.build_criterion(args)
     logger.info(model)
