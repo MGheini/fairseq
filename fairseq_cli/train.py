@@ -156,17 +156,15 @@ def main(args):
                     param.requires_grad = False
                 else:
                     logger.info(f'parameter {name} will be trained')
-        if args.only_finetune_src_embeddings:
-            logger.info(f'only src embeddings will be trained, freezing all other parameters, dismiss earlier info')
-            for name, param in model.named_parameters():
-                if name in ['encoder.embed_tokens.weight',
-                            'encoder.embed_positions.weight',
-                            'encoder.layernorm_embedding.weight',
-                            'encoder.layernorm_embedding.bias']:
-                    param.requires_grad = True
-                    logger.info(f'parameter {name} will be trained')
-                else:
-                    param.requires_grad = False
+            if args.also_finetune_src_embeddings:
+                logger.info(f'src embeddings will also be trained, dismiss earlier info')
+                for name, param in model.named_parameters():
+                    if name in ['encoder.embed_tokens.weight',
+                                'encoder.embed_positions.weight',
+                                'encoder.layernorm_embedding.weight',
+                                'encoder.layernorm_embedding.bias']:
+                        param.requires_grad = True
+                        logger.info(f'parameter {name} will be trained')
 
     criterion = task.build_criterion(args)
     logger.info(model)

@@ -694,7 +694,7 @@ def add_transformer_body_loading_args(parser):
                        help='load a frankenstein model to finetune on translation')
     group.add_argument('--only-finetune-cross-attn', action='store_true',
                        help='freeze all parameters but the cross attention')
-    group.add_argument('--only-finetune-src-embeddings', action='store_true',
-                       help='freeze all parameters but the src embeddings')
+    group.add_argument('--also-finetune-src-embeddings', action='store_true',
+                       help='finetune src embeddings as well as cross attention')
     # fmt: on
     return group
