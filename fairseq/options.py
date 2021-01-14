@@ -698,6 +698,8 @@ def add_transformer_body_loading_args(parser):
                        help='freeze all parameters but the cross attention')
     group.add_argument('--also-finetune-src-embeddings', action='store_true',
                        help='finetune src embeddings as well as cross attention')
+    group.add_argument('--also-finetune-tgt-embeddings', action='store_true',
+                       help='finetune tgt embeddings as well as cross attention')
     group.add_argument('--load-franken-model-but-src-embeddings-and-freeze-tgt-embeddings-from', default=None, type=str,
                        help='load a frankenstein model to finetune on translation with tgt embeddings locked'
                             'and src embeddings reinitialized.')
