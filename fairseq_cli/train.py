@@ -98,7 +98,7 @@ def main(args):
                             'decoder.output_projection.weight'
                             ]:
                 with torch.no_grad():
-                    if name == 'encoder.embed_tokens.weight' and args.loading_from_language_model:
+                    if name == 'encoder.embed_tokens.weight' and args.loading_src_embeddings_from_language_model:
                         # remove last row of embedding matrix that corresponds to mask_idx token.
                         param.copy_(pretrained_state_dict[name][:-1, :])
                     else:
@@ -127,7 +127,7 @@ def main(args):
                         ]:
                 with torch.no_grad():
                     if (name == 'decoder.embed_tokens.weight' or name == 'decoder.output_projection.weight') \
-                            and args.loading_from_language_model:
+                            and args.loading_tgt_embeddings_from_language_model:
                         # remove last row of embedding matrix that corresponds to mask_idx token.
                         param.copy_(pretrained_state_dict[name][:-1, :])
                     else:

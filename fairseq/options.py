@@ -684,12 +684,14 @@ def add_transformer_body_loading_args(parser):
     group.add_argument('--load-transformer-body-and-src-embeddings-from', default=None, type=str,
                        help='load the transformer body and src embeddings from a pretrained model'
                             'to finetune on translation')
-    group.add_argument('--loading-from-language-model', action='store_true',
-                       help='part of an LM is being loaded')
+    group.add_argument('--loading-src-embeddings-from-language-model', action='store_true',
+                       help='src embeddings are being loaded from an LM')
     group.add_argument('--freeze-pretrained-src-embeddings', action='store_true',
                        help='freeze the src embeddings during training')
     group.add_argument('--load-tgt-embeddings-from', default=None, type=str,
                        help='load the tgt embeddings from a pretrained model to finetune on translation')
+    group.add_argument('--loading-tgt-embeddings-from-language-model', action='store_true',
+                       help='tgt embeddings are being loaded from an LM')
     group.add_argument('--freeze-pretrained-tgt-embeddings', action='store_true',
                        help='freeze the tgt embeddings during training')
     group.add_argument('--load-franken-model-and-freeze-tgt-embeddings-from', default=None, type=str,
