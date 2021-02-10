@@ -98,7 +98,7 @@ def main(args):
                             'decoder.output_projection.weight'
                             ]:
                 with torch.no_grad():
-                    if name == 'encoder.embed_tokens.weight':
+                    if name == 'encoder.embed_tokens.weight' and args.loading_from_language_model:
                         # remove last row of embedding matrix that corresponds to mask_idx token.
                         param.copy_(pretrained_state_dict[name][:-1, :])
                     else:
@@ -112,6 +112,10 @@ def main(args):
                                 ]:
                         param.requires_grad = False
                         logger.info(f'froze parameter {name}')
+                if args.only_finetune_cross_attn:
+                    if 'encoder_attn' not in name:
+                        param.requires_grad = False
+                        logger.info(f'froze parameter {name}')
     if getattr(args, 'load_tgt_embeddings_from') is not None:
         pretrained_state_dict = torch.load(args.load_tgt_embeddings_from)['model']
         for name, param in model.named_parameters():
@@ -122,7 +126,8 @@ def main(args):
                         'decoder.output_projection.weight'
                         ]:
                 with torch.no_grad():
-                    if name == 'decoder.embed_tokens.weight' or name == 'decoder.output_projection.weight':
+                    if (name == 'decoder.embed_tokens.weight' or name == 'decoder.output_projection.weight') \
+                            and args.loading_from_language_model:
                         # remove last row of embedding matrix that corresponds to mask_idx token.
                         param.copy_(pretrained_state_dict[name][:-1, :])
                     else:
