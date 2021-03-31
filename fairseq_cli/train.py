@@ -214,6 +214,16 @@ def main(args):
                             ]:
                     param.requires_grad = False
                     logger.info(f'froze parameter {name}')
+        if args.also_finetune_tgt_embeddings:
+            logger.info(f'tgt embeddings will also be trained, dismiss earlier info')
+            for name, param in model.named_parameters():
+                if name in ['decoder.embed_tokens.weight',
+                            'decoder.embed_positions.weight',
+                            'decoder.layernorm_embedding.weight',
+                            'decoder.layernorm_embedding.bias',
+                            'decoder.output_projection.weight']:
+                    param.requires_grad = True
+                    logger.info(f'parameter {name} will be trained')
         if args.only_finetune_cross_attn:
             logger.info(f'only cross-attention layers will be trained in addition to src embeddings,'
                         f'freezing all other parameters')
