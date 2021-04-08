@@ -707,8 +707,14 @@ def add_transformer_body_loading_args(parser):
     group.add_argument('--load-franken-model-but-src-embeddings-and-freeze-tgt-embeddings-from', default=None, type=str,
                        help='load a frankenstein model to finetune on translation with tgt embeddings locked'
                             'and src embeddings reinitialized.')
+    group.add_argument('--load-model-but-tgt-embeddings-and-freeze-src-embeddings-from', default=None, type=str,
+                       help='load a model to finetune on translation with src embeddings locked'
+                            'and tgt embeddings reinitialized.')
     group.add_argument('--load-model-but-src-embeddings-and-xattn-and-freeze-tgt-embeddings-from', default=None, type=str,
                        help='load a model to finetune on translation with tgt embeddings locked'
-                            'and src embeddings reinitialized.')
+                            'and src embeddings & xattn reinitialized.')
+    group.add_argument('--load-model-but-tgt-embeddings-and-xattn-and-freeze-src-embeddings-from', default=None, type=str,
+                       help='load a model to finetune on translation with src embeddings locked'
+                            'and tgt embeddings & xattn reinitialized.')
     # fmt: on
     return group
