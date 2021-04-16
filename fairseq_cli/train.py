@@ -237,6 +237,18 @@ def main(args):
                     param.requires_grad = False
                 else:
                     logger.info(f'parameter {name} will be trained')
+        if args.freeze_pretrained_transformer_body:
+            logger.info(f'only src embeddings will be trained,'
+                        f'freezing all other parameters')
+            for name, param in model.named_parameters():
+                if name not in ['encoder.embed_tokens.weight',
+                                'encoder.embed_positions.weight',
+                                'encoder.layernorm_embedding.weight',
+                                'encoder.layernorm_embedding.bias'
+                                ]:
+                    param.requires_grad = False
+                else:
+                    logger.info(f'parameter {name} will be trained')
     if getattr(args, 'load_model_but_src_embeddings_and_xattn_and_freeze_tgt_embeddings_from') is not None:
         logger.info(f'loading the model but the src embeddings and xattn from'
                     f'{args.load_model_but_src_embeddings_and_xattn_and_freeze_tgt_embeddings_from}')
