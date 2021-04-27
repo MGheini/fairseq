@@ -237,6 +237,16 @@ def main(args):
                     param.requires_grad = False
                 else:
                     logger.info(f'parameter {name} will be trained')
+        if args.only_finetune_encoder_side:
+            logger.info(f'only the encoder body will be trained in addition to src embeddings,'
+                        f'freezing all other parameters')
+            for name, param in model.named_parameters():
+                if 'encoder.' in name:
+                    param.requires_grad = True
+                    logger.info(f'parameter {name} will be trained')
+                else:
+                    param.requires_grad = False
+                    logger.info(f'froze parameter {name}')
         if args.freeze_pretrained_transformer_body:
             logger.info(f'only src embeddings will be trained,'
                         f'freezing all other parameters')
@@ -317,6 +327,16 @@ def main(args):
                     param.requires_grad = False
                 else:
                     logger.info(f'parameter {name} will be trained')
+        if args.only_finetune_decoder_side:
+            logger.info(f'only the decoder body will be trained in addition to tgt embeddings,'
+                        f'freezing all other parameters')
+            for name, param in model.named_parameters():
+                if 'decoder.' in name and 'encoder_attn' not in name:
+                    param.requires_grad = True
+                    logger.info(f'parameter {name} will be trained')
+                else:
+                    param.requires_grad = False
+                    logger.info(f'froze parameter {name}')
     if getattr(args, 'load_model_but_tgt_embeddings_and_xattn_and_freeze_src_embeddings_from') is not None:
         logger.info(f'loading the model but the tgt embeddings and xattn from'
                     f'{args.load_model_but_tgt_embeddings_and_xattn_and_freeze_src_embeddings_from}')

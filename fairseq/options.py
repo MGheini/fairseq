@@ -716,5 +716,9 @@ def add_transformer_body_loading_args(parser):
     group.add_argument('--load-model-but-tgt-embeddings-and-xattn-and-freeze-src-embeddings-from', default=None, type=str,
                        help='load a model to finetune on translation with src embeddings locked'
                             'and tgt embeddings & xattn reinitialized.')
+    group.add_argument('--only-finetune-encoder-side', action='store_true',
+                       help='only finetune encoder side (new src language)')
+    group.add_argument('--only-finetune-decoder-side', action='store_true',
+                       help='only finetune decoder side (new tgt language)')
     # fmt: on
     return group
