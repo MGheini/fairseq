@@ -720,5 +720,8 @@ def add_transformer_body_loading_args(parser):
                        help='only finetune encoder side (new src language)')
     group.add_argument('--only-finetune-decoder-side', action='store_true',
                        help='only finetune decoder side (new tgt language)')
+
+    group.add_argument('--finetune-from-mbart-at', default=None, type=str,
+                       help='path to the trimmed mbart model to be finetuned with no freezing')
     # fmt: on
     return group
