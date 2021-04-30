@@ -372,9 +372,10 @@ def main(args):
                 else:
                     logger.info(f'parameter {name} will be trained')
     if getattr(args, 'finetune_from_mbart_at') is not None:
-        logger.info(f'loading the trimmed mbart from'
+        logger.info(f'loading the trimmed mbart from '
                     f'{args.finetune_from_mbart_at}')
         pretrained_state_dict = torch.load(args.finetune_from_mbart_at)['model']
+        pretrained_state_dict = model.upgrade_state_dict_named(pretrained_state_dict)
         model_params = set()
         for name, _ in model.named_parameters():
             model_params.add(name)
