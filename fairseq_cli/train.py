@@ -378,7 +378,12 @@ def main(args):
         model_params = set()
         for name, _ in model.named_parameters():
             model_params.update(name)
-        assert model_params == set(pretrained_state_dict.keys())
+        for name in model_params:
+            if name not in pretrained_state_dict:
+                logger.info(f'{name} not found in pretrained_state_dict')
+        for name in pretrained_state_dict:
+            if name not in model_params:
+                logger.info(f'{name} not found in model_params')
         for name, param in model.named_parameters():
             with torch.no_grad():
                 param.copy_(pretrained_state_dict[name])
