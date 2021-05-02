@@ -723,5 +723,7 @@ def add_transformer_body_loading_args(parser):
 
     group.add_argument('--finetune-from-mbart-at', default=None, type=str,
                        help='path to the trimmed mbart model to be finetuned with no freezing')
+    group.add_argument('--finetune-from-mbart-with-reinit-xattn-at', default=None, type=str,
+                       help='path to the trimmed mbart model to be finetuned with reinitialized cross attention')
     # fmt: on
     return group

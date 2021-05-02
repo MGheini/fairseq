@@ -418,6 +418,49 @@ def main(args):
                     param.requires_grad = False
                 else:
                     logger.info(f'parameter {name} will be trained')
+        if args.freeze_pretrained_transformer_body:
+            logger.info(f'only embeddings will be trained,'
+                        f'freezing all other parameters')
+            for name, param in model.named_parameters():
+                if name not in ['encoder.embed_tokens.weight',
+                                'encoder.embed_positions.weight',
+                                'encoder.layernorm_embedding.weight',
+                                'encoder.layernorm_embedding.bias',
+                                'decoder.embed_tokens.weight',
+                                'decoder.embed_positions.weight',
+                                'decoder.layernorm_embedding.weight',
+                                'decoder.layernorm_embedding.bias',
+                                'decoder.output_projection.weight']:
+                    param.requires_grad = False
+                else:
+                    logger.info(f'parameter {name} will be trained')
+    if getattr(args, 'finetune_from_mbart_with_reinit_xattn_at') is not None:
+        logger.info(f'loading the trimmed mbart from '
+                    f'{args.finetune_from_mbart_with_reinit_xattn_at}, '
+                    f'cross-attention will be reinitialized.')
+        pretrained_state_dict = torch.load(args.finetune_from_mbart_with_reinit_xattn_at)['model']
+        model.upgrade_state_dict_named(pretrained_state_dict, '')
+        for name, param in model.named_parameters():
+            with torch.no_grad():
+                if 'encoder_attn' not in name:
+                    param.copy_(pretrained_state_dict[name])
+        if args.only_finetune_cross_attn:
+            logger.info(f'only cross-attention layers will be trained in addition to embeddings,'
+                        f'freezing all other parameters')
+            for name, param in model.named_parameters():
+                if 'encoder_attn' not in name and \
+                    name not in ['encoder.embed_tokens.weight',
+                                 'encoder.embed_positions.weight',
+                                 'encoder.layernorm_embedding.weight',
+                                 'encoder.layernorm_embedding.bias',
+                                 'decoder.embed_tokens.weight',
+                                 'decoder.embed_positions.weight',
+                                 'decoder.layernorm_embedding.weight',
+                                 'decoder.layernorm_embedding.bias',
+                                 'decoder.output_projection.weight']:
+                    param.requires_grad = False
+                else:
+                    logger.info(f'parameter {name} will be trained')
 
     criterion = task.build_criterion(args)
     logger.info(model)
