@@ -405,16 +405,7 @@ def main(args):
             logger.info(f'only cross-attention layers will be trained in addition to embeddings,'
                         f'freezing all other parameters')
             for name, param in model.named_parameters():
-                if 'encoder_attn' not in name and \
-                    name not in ['encoder.embed_tokens.weight',
-                                 'encoder.embed_positions.weight',
-                                 'encoder.layernorm_embedding.weight',
-                                 'encoder.layernorm_embedding.bias',
-                                 'decoder.embed_tokens.weight',
-                                 'decoder.embed_positions.weight',
-                                 'decoder.layernorm_embedding.weight',
-                                 'decoder.layernorm_embedding.bias',
-                                 'decoder.output_projection.weight']:
+                if 'encoder_attn' not in name:
                     param.requires_grad = False
                 else:
                     logger.info(f'parameter {name} will be trained')
