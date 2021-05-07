@@ -259,6 +259,16 @@ def main(args):
                     param.requires_grad = False
                 else:
                     logger.info(f'parameter {name} will be trained')
+            if args.also_finetune_tgt_embeddings:
+                logger.info(f'tgt embeddings will also be trained, dismiss earlier info')
+                for name, param in model.named_parameters():
+                    if name in ['decoder.embed_tokens.weight',
+                                'decoder.embed_positions.weight',
+                                'decoder.layernorm_embedding.weight',
+                                'decoder.layernorm_embedding.bias',
+                                'decoder.output_projection.weight']:
+                        param.requires_grad = True
+                        logger.info(f'parameter {name} will be trained')
     if getattr(args, 'load_model_but_src_embeddings_and_xattn_and_freeze_tgt_embeddings_from') is not None:
         logger.info(f'loading the model but the src embeddings and xattn from'
                     f'{args.load_model_but_src_embeddings_and_xattn_and_freeze_tgt_embeddings_from}')
